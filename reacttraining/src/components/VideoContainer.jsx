@@ -27,12 +27,12 @@ const VideoContainer = () => {
         gap: '8px',
       }}
     >
-      {videos.map((video) => (
+      {!!videos ?videos?.map((video) => (
         <Link key={video.id} to={`/watch?v=${video.id}`}>
         <VideoCard key={video.id} info={video} />
         </Link>
-        
-      ))}
+
+      )): <strong style={{ fontSize: '24px' }}>Generate API Key</strong>}
     </div>
   );
 };
