@@ -1,35 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+import './App.css';
+import Head from './components/Head.jsx';
+import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import VideoContainer from './components/VideoContainer.jsx';
+import WatchPage from './components/WatchPage.jsx';
+import Body from './components/Body.jsx';
+import { VideoProvider } from './utils/VideoContext.jsx';
+import LikedVideo from './components/LikedVideo.jsx';
+import { lazy,Suspense } from 'react';
+import UserComponent from './components/UserComponent.jsx';
 
+//const LikedVideo = lazy(() => import('./components/LikedVideo.jsx')); // Lazy load WatchPage
+// Layout component to always show Head and add top padding
+function Layout() {
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <Head />
+      <div style={{ width: '100%', paddingTop: '70px' }}>
+        <Outlet />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+const appRouter = createBrowserRouter([
+  {
+    path: '/',
+    element: <Layout />, // Head is always rendered
+    children: [
+      { path: '', element: <Body /> },
+      // { path: '/list', element: <VideoContainer /> },
+      { path: '/watch', element: <WatchPage /> },
+      //{ path: '/like', element: <Suspense fallback={<div>Loading...</div>}><LikedVideo /></Suspense> },
+       { path: '/like', element: <LikedVideo /> },
+    ]
+  },
+  {
+    path:'/user',
+    element:<UserComponent />
+  }
+]);
+
+function App() {
+  return <VideoProvider><RouterProvider router={appRouter} /></VideoProvider>;
+}
+
+export default App;
+
+
+
